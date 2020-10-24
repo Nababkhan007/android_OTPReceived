@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">OTPReceived</string>
+    <string name="enter_otp">Enter OTP</string>
+</resources>
