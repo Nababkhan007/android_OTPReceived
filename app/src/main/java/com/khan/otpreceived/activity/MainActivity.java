@@ -1,19 +1,19 @@
 package com.khan.otpreceived.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.khan.otpreceived.R;
 import com.khan.otpreceived.service.OTPReceiver;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int SMS_REQUEST_CODE = 1;
+    private static final int SMS_REQUEST_CODE = 99;
     private EditText otpEt;
 
     @Override
@@ -29,13 +29,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestSmsPermission() {
-        String permission = Manifest.permission.RECEIVE_SMS;
-        int grant = ContextCompat.checkSelfPermission(this, permission);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS},
+                    SMS_REQUEST_CODE);
+        } else {
+            setOtp();
+        }
+    }
 
-        if (grant != PackageManager.PERMISSION_GRANTED) {
-            String[] permissionList = new String[1];
-            permissionList[0] = permission;
-            ActivityCompat.requestPermissions(this, permissionList, SMS_REQUEST_CODE);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            setOtp();
         }
     }
 

@@ -22,8 +22,7 @@ public class OTPReceiver extends BroadcastReceiver {
             SmsMessage[] smsMessage = Telephony.Sms.Intents.getMessagesFromIntent(intent);
             for (SmsMessage sms : smsMessage) {
                 String message = sms.getMessageBody();
-                String otp = message.split(": ")[1];
-                editText.setText(otp);
+                editText.setText(message);
             }
         }
     }
